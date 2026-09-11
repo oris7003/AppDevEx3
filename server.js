@@ -16,9 +16,26 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+// Stage validation middleware for educational game requests
+const stageValidator = require('./src/validation/stageValidator');
+app.use(stageValidator);
+
 // Mount REST API routes under /api
 const apiRouter = require('./src/routes/api');
 app.use('/api', apiRouter);
+
+// Fallback 404 handler for API endpoints
+app.use('/api', (req, res) => {
+  const feedback = req.stageValidation
+    ? req.stageValidation.message
+    : `Endpoint ${req.method} ${req.originalUrl} not found`;
+
+  res.status(404).json({
+    error: 'Not Found',
+    message: feedback,
+    validation: req.stageValidation || { success: false, message: feedback }
+  });
+});
 
 // Root healthcheck / welcome route
 app.get('/health', (req, res) => {

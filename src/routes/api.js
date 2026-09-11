@@ -2,6 +2,12 @@
 const express = require('express');
 const router = express.Router();
 const store = require('../data/store');
+const { getPublicStages } = require('../validation/stageDefinitions');
+
+// GET /api/stages - Retrieve list of stages with public scenario descriptions
+router.get('/stages', (req, res) => {
+  res.status(200).json({ data: getPublicStages() });
+});
 
 // GET /api/books - Retrieve books with optional category and sorting query parameters
 router.get('/books', (req, res) => {
