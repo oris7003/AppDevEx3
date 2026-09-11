@@ -16,6 +16,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+// Mount REST API routes under /api
+const apiRouter = require('./src/routes/api');
+app.use('/api', apiRouter);
+
 // Root healthcheck / welcome route
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', uptime: process.uptime() });
