@@ -16,6 +16,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+// Mount SSR page views router
+const viewsRouter = require('./src/routes/views');
+app.use('/', viewsRouter);
+
 // Stage validation middleware for educational game requests
 const stageValidator = require('./src/validation/stageValidator');
 app.use(stageValidator);

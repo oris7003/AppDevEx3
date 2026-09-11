@@ -1,0 +1,186 @@
+<%- include('partials/header') %>
+
+<div class="game-wrapper">
+  <!-- Top Stats & Progress Bar -->
+  <section class="progress-section card">
+    <div class="progress-header">
+      <div class="stage-counter">
+        <span class="label">התקדמות במשחק:</span>
+        <strong id="stage-display-text">שלב <span id="active-stage-number">1</span> מתוך <%= totalStages %></strong>
+      </div>
+      <div class="stats-counters">
+        <span class="stat-item">ניסיונות: <strong id="attempt-counter">0</strong></span>
+        <span class="stat-item">שלבים שהושלמו: <strong id="completed-counter">0</strong> / <%= totalStages %></span>
+      </div>
+    </div>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="progress-bar" style="width: 10%;"></div>
+    </div>
+
+    <!-- Stage Navigation Pills -->
+    <div class="stage-nav-grid" id="stage-nav-grid">
+      <% stages.forEach(function(s, index) { %>
+        <button
+          class="stage-nav-btn <%= index === 0 ? 'active' : 'locked' %>"
+          data-stage-id="<%= s.id %>"
+          id="stage-nav-btn-<%= s.id %>"
+          title="<%= s.title %>"
+        >
+          <span class="nav-btn-num"><%= s.id %></span>
+        </button>
+      <% }); %>
+    </div>
+  </section>
+
+  <!-- Stage Challenge Scenario Card -->
+  <section class="scenario-section card">
+    <div class="scenario-header">
+      <div class="scenario-title-area">
+        <span class="badge badge-accent" id="scenario-stage-badge">שלב 1</span>
+        <h2 id="scenario-title"><%= stages[0].title %></h2>
+      </div>
+      <div class="concepts-list" id="concepts-list">
+        <% stages[0].concepts.forEach(function(c) { %>
+          <span class="concept-pill"><%= c %></span>
+        <% }); %>
+      </div>
+    </div>
+    <p class="scenario-desc" id="scenario-desc"><%= stages[0].description %></p>
+  </section>
+
+  <!-- Interactive HTTP Request Builder & Response Inspector Grid -->
+  <div class="workbench-grid">
+    <!-- Left Column: Request Builder -->
+    <section class="request-builder card">
+      <div class="panel-header">
+        <h3>הרכבת בקשת ה-HTTP (Client Request)</h3>
+        <span class="panel-subtitle">הגדר את סוג הבקשה, הנתיב, הפרמטרים וה-Body</span>
+      </div>
+
+      <form id="http-request-form">
+        <!-- Method & Path Row -->
+        <div class="form-group-row">
+          <div class="form-control-wrap method-wrap">
+            <label for="http-method">Method</label>
+            <select id="http-method" name="method" class="form-select">
+              <option value="GET" selected>GET</option>
+              <option value="POST">POST</option>
+              <option value="PATCH">PATCH</option>
+              <option value="PUT">PUT</option>
+              <option value="DELETE">DELETE</option>
+            </select>
+          </div>
+
+          <div class="form-control-wrap path-wrap">
+            <label for="http-path">Request Path (נתיב ה-API)</label>
+            <div class="input-with-prefix">
+              <input
+                type="text"
+                id="http-path"
+                name="path"
+                class="form-input code-font"
+                placeholder="/api/books"
+                value="/api/books"
+                dir="ltr"
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Query Parameters Section -->
+        <div class="accordion-item" id="query-params-accordion">
+          <div class="accordion-header">
+            <label>Query Parameters (?key=value)</label>
+            <button type="button" class="btn btn-xs btn-outline" id="add-query-param-btn">➕ הוסף פרמטר</button>
+          </div>
+          <div class="query-params-list" id="query-params-list">
+            <!-- Dynamic Key-Value Rows inserted via JS -->
+          </div>
+        </div>
+
+        <!-- Request Body Section (JSON) -->
+        <div class="form-group" id="body-section">
+          <div class="body-header">
+            <label for="http-body">Request Body (JSON)</label>
+            <div class="body-actions">
+              <button type="button" class="btn btn-xs btn-outline" id="format-json-btn">⚡ עצב JSON</button>
+              <button type="button" class="btn btn-xs btn-outline" id="clear-body-btn">🗑️ נקה</button>
+            </div>
+          </div>
+          <textarea
+            id="http-body"
+            name="body"
+            class="form-textarea code-font"
+            rows="5"
+            dir="ltr"
+            placeholder='{\n  "title": "Clean Code",\n  "author": "Robert C. Martin"\n}'
+          ></textarea>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+          <button type="submit" class="btn btn-success btn-lg" id="send-request-btn">
+            🚀 שלח בקשת HTTP
+          </button>
+          <button type="button" class="btn btn-outline" id="reset-inputs-btn">
+            🔄 אפס טופס
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Right Column: Server Response Inspector -->
+    <section class="response-inspector card">
+      <div class="panel-header">
+        <h3>תשובת השרת (Server Response)</h3>
+        <div class="status-indicator-wrap" id="status-indicator-wrap" style="display: none;">
+          <span class="status-badge" id="status-badge">200 OK</span>
+          <span class="time-badge" id="time-badge">12ms</span>
+        </div>
+      </div>
+
+      <!-- Server Validation Banner -->
+      <div class="validation-banner" id="validation-banner">
+        <div class="validation-message-wrap">
+          <span class="validation-icon" id="validation-icon">💡</span>
+          <div class="validation-text">
+            <strong id="validation-title">ממתין לשליחת בקשה...</strong>
+            <p id="validation-desc">בחר את הפרמטרים המתאימים לשלב ולחץ על "שלח בקשת HTTP".</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary" id="next-stage-btn" style="display: none;">
+          המשך לשלב הבא ⬅️
+        </button>
+      </div>
+
+      <!-- Response Headers & Metadata -->
+      <div class="response-meta-box">
+        <div class="meta-row">
+          <span class="meta-label">נתיב שנשלח:</span>
+          <code id="requested-url-display" class="code-font" dir="ltr">-</code>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">כותרות תגובה:</span>
+          <span id="response-headers-display" class="code-font" dir="ltr">Content-Type: application/json</span>
+        </div>
+      </div>
+
+      <!-- Response Body Display -->
+      <div class="response-body-wrap">
+        <div class="response-body-header">
+          <span>גוף התשובה (Response Payload JSON):</span>
+          <button type="button" class="btn btn-xs btn-outline" id="copy-response-btn">📋 העתק JSON</button>
+        </div>
+        <pre class="response-pre"><code id="response-code-display" class="code-font" dir="ltr">// התוצאה שתתקבל מהשרת תוצג כאן...</code></pre>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- Embedded Stages Configuration for Client-Side Navigation -->
+<script id="stages-data" type="application/json">
+  <%- JSON.stringify(stages) %>
+</script>
+
+<%- include('partials/footer') %>
