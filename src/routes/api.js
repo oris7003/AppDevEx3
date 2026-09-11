@@ -102,6 +102,86 @@ router.delete('/books/:id', (req, res) => {
   });
 });
 
+// Relational Reviews Endpoints
+
+// GET /api/books/:id/reviews - Retrieve all reviews for a specific book
+router.get('/books/:id/reviews', (req, res) => {
+  const { id } = req.params;
+  const book = store.getBookById(id);
+
+  if (!book) {
+    return res.status(404).json({
+      error: 'Not Found',
+      message: `Cannot retrieve reviews: Book with ID ${id} was not found`
+    });
+  }
+
+  const reviews = store.getReviews({ bookId: id });
+  res.status(200).json({
+    bookId: Number(id),
+    bookTitle: book.title,
+    total: reviews.length,
+    data: reviews
+  });
+});
+
+// POST /api/books/:id/reviews - Create a new review for a specific book
+router.post('/books/:id/reviews', (req, res) => {
+  const { id } = req.params;
+  const book = store.getBookById(id);
+
+  if (!book) {
+    return res.status(404).json({
+      error: 'Not Found',
+      message: `Cannot add review: Book with ID ${id} was not found`
+    });
+  }
+
+  const { reviewer, comment, rating } = req.body;
+  if (!reviewer || !comment) {
+    return res.status(400).json({
+      error: 'Bad Request',
+      message: 'Reviewer name and comment are required fields'
+    });
+  }
+
+  const newReview = store.createReview({
+    bookId: id,
+    reviewer,
+    comment,
+    rating: rating !== undefined ? Number(rating) : 5
+  });
+
+  res.status(201).json({
+    message: `Review added successfully for book "${book.title}"`,
+    data: newReview
+  });
+});
+
+// GET /api/reviews - Retrieve all reviews
+router.get('/reviews', (req, res) => {
+  const reviews = store.getReviews();
+  res.status(200).json({
+    total: reviews.length,
+    data: reviews
+  });
+});
+
+// GET /api/reviews/:id - Retrieve a specific review by ID
+router.get('/reviews/:id', (req, res) => {
+  const { id } = req.params;
+  const review = store.getReviewById(id);
+
+  if (!review) {
+    return res.status(404).json({
+      error: 'Not Found',
+      message: `Review with ID ${id} was not found`
+    });
+  }
+
+  res.status(200).json({ data: review });
+});
+
 // POST /api/reset - Reset the in-memory data store to initial state
 router.post('/reset', (req, res) => {
   store.reset();
