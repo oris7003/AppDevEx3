@@ -1,0 +1,24 @@
+{
+  "name": "app-dev-ex3-http-rest-game",
+  "version": "1.0.0",
+  "description": "Interactive educational web game for learning HTTP and REST concepts",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node test/test-runner.js"
+  },
+  "keywords": [
+    "http",
+    "rest",
+    "express",
+    "ejs",
+    "educational-game"
+  ],
+  "author": "oris7003 & yoav7000",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.19.2"
+  }
+}
