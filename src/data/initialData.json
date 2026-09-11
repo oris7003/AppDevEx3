@@ -1,0 +1,109 @@
+{
+  "books": [
+    {
+      "id": 1,
+      "title": "Clean Code",
+      "author": "Robert C. Martin",
+      "category": "Technology",
+      "price": 38.5,
+      "rating": 4.7,
+      "inStock": true
+    },
+    {
+      "id": 2,
+      "title": "A Brief History of Time",
+      "author": "Stephen Hawking",
+      "category": "Science",
+      "price": 24.99,
+      "rating": 4.8,
+      "inStock": true
+    },
+    {
+      "id": 3,
+      "title": "To Kill a Mockingbird",
+      "author": "Harper Lee",
+      "category": "Fiction",
+      "price": 18.0,
+      "rating": 4.6,
+      "inStock": false
+    },
+    {
+      "id": 4,
+      "title": "Sapiens: A Brief History of Humankind",
+      "author": "Yuval Noah Harari",
+      "category": "History",
+      "price": 27.5,
+      "rating": 4.9,
+      "inStock": true
+    },
+    {
+      "id": 5,
+      "title": "1984",
+      "author": "George Orwell",
+      "category": "Fiction",
+      "price": 14.99,
+      "rating": 4.8,
+      "inStock": true
+    },
+    {
+      "id": 6,
+      "title": "Cosmos",
+      "author": "Carl Sagan",
+      "category": "Science",
+      "price": 29.0,
+      "rating": 4.9,
+      "inStock": true
+    },
+    {
+      "id": 7,
+      "title": "The Hobbit",
+      "author": "J.R.R. Tolkien",
+      "category": "Fiction",
+      "price": 21.0,
+      "rating": 4.7,
+      "inStock": true
+    }
+  ],
+  "reviews": [
+    {
+      "id": 1,
+      "bookId": 1,
+      "reviewer": "Alice Johnson",
+      "comment": "Essential principles every developer should master.",
+      "rating": 5,
+      "date": "2026-01-15"
+    },
+    {
+      "id": 2,
+      "bookId": 1,
+      "reviewer": "Bob Smith",
+      "comment": "Practical advice that immediately improved my code quality.",
+      "rating": 4,
+      "date": "2026-02-10"
+    },
+    {
+      "id": 3,
+      "bookId": 2,
+      "reviewer": "Charlie Davis",
+      "comment": "Brilliant explanation of complex cosmological concepts.",
+      "rating": 5,
+      "date": "2026-03-01"
+    },
+    {
+      "id": 4,
+      "bookId": 4,
+      "reviewer": "Dana White",
+      "comment": "A thought-provoking perspective on human evolution.",
+      "rating": 5,
+      "date": "2026-04-12"
+    },
+    {
+      "id": 5,
+      "bookId": 5,
+      "reviewer": "Evan Lee",
+      "comment": "Chilling and timeless masterpiece.",
+      "rating": 5,
+      "date": "2026-05-08"
+    }
+  ]
+}
