@@ -9,6 +9,17 @@
 
   console.log('[GitHub Pages] In-browser API & validation simulator active.');
 
+  // Prevent navigation to domain root on GitHub Pages
+  document.addEventListener('click', function(e) {
+    const a = e.target.closest('a');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    if (href === '/' || href === '/AppDevEx3' || href === '/AppDevEx3/') {
+      e.preventDefault();
+      window.location.href = './index.html';
+    }
+  });
+
   let books = [
     { id: 1, title: "Clean Code", author: "Robert C. Martin", category: "Technology", price: 38.5, rating: 4.7, inStock: true },
     { id: 2, title: "A Brief History of Time", author: "Stephen Hawking", category: "Science", price: 24.99, rating: 4.8, inStock: true },
