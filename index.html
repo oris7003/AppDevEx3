@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTTP &amp; REST Educational Game</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-container">
+      <div class="brand">
+        <a href="./" class="brand-link">
+          <span class="brand-badge">REST</span>
+          <span class="brand-title">מעבדת פרוטוקול HTTP ו-REST</span>
+        </a>
+      </div>
+      <nav class="site-nav">
+        <a href="/" class="nav-link">🎮 משחק השלבים</a>
+        <a href="./schemas.html" class="nav-link">📋 סכמות המשאבים</a>
+        <button id="reset-store-btn" class="btn btn-secondary btn-sm" title="איפוס נתוני השרת למצב התחלתי">
+          🔄 איפוס נתונים
+        </button>
+      </nav>
+    </div>
+  </header>
+  <main class="main-container">
+
+
+<div class="game-wrapper">
+  <!-- Top Stats & Progress Bar -->
+  <section class="progress-section card">
+    <div class="progress-header">
+      <div class="stage-counter">
+        <span class="label">התקדמות במשחק:</span>
+        <strong id="stage-display-text">שלב <span id="active-stage-number">1</span> מתוך 10</strong>
+      </div>
+      <div class="stats-counters">
+        <span class="stat-item">ניסיונות: <strong id="attempt-counter">0</strong></span>
+        <span class="stat-item">שלבים שהושלמו: <strong id="completed-counter">0</strong> / 10</span>
+      </div>
+    </div>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="progress-bar" style="width: 10%;"></div>
+    </div>
+
+    <!-- Stage Navigation Pills -->
+    <div class="stage-nav-grid" id="stage-nav-grid">
+      
+        <button
+          class="stage-nav-btn active"
+          data-stage-id="1"
+          id="stage-nav-btn-1"
+          title="הצגת קטלוג הספרים המלא"
+        >
+          <span class="nav-btn-num">1</span>
+        </button>
+      
+        <button
+          class="stage-nav-btn locked"
+          data-stage-id="2"
+          id="stage-nav-btn-2"
+          title="שליפת פריט בודד לפי מזהה"
+        >
+          <span class="nav-btn-num">2</span>
+        </button>
+      
+        <button
+          class="stage-nav-btn locked"
+          data-stage-id="3"
+          id="stage-nav-btn-3"
+          title="סינון תוצאות באמצעות Query Parameter"
+        >
+          <span class="nav-btn-num">3</span>
+        </button>
+      
+        <button
+          class="stage-nav-btn locked"
+          data-stage-id="4"
+          id="stage-nav-btn-4"
+          title="שילוב מספר Query Parameters (סינון ומיון)"
+        >
+          <span class="nav-btn-num">4</span>
+        </button>
+      
+        <button
+          class="stage-nav-btn locked"
+          data-stage-id="5"
+          id="stage-nav-btn-5"
+          title="טיפול בשגיאות ובחינת קוד סטטוס 404"
+        >
+          <span class="nav-btn-num">5</span>
+        </button>
+      
+        <button
+          class="stage-nav-btn locked"
+          data-stage-id="6"
+          id="stage-nav-btn-6"
+          title="יצירת משאב חדש באמצעות POST ו-Body"
+        >
+          <span class="nav-btn-num">6</span>
+        </button>
+      
+        <button
+          class="stage-nav-btn locked"
+          data-stage-id="7"
+          id="stage-nav-btn-7"
+          title="עדכון משאב קיים (PATCH/PUT + Route Param + Body)"
+        >
+          <span class="nav-btn-num">7</span>
+        </button>
+      
+        <button
+          class="stage-nav-btn locked"
+          data-stage-id="8"
+          id="stage-nav-btn-8"
+          title="שליפת משאב מקושר (Nested Relational Route)"
+        >
+          <span class="nav-btn-num">8</span>
+        </button>
+      
+        <button
+          class="stage-nav-btn locked"
+          data-stage-id="9"
+          id="stage-nav-btn-9"
+          title="הוספת ביקורת למשאב מקושר (Nested Route + POST + Body)"
+        >
+          <span class="nav-btn-num">9</span>
+        </button>
+      
+        <button
+          class="stage-nav-btn locked"
+          data-stage-id="10"
+          id="stage-nav-btn-10"
+          title="מחיקת משאב (DELETE עם Route Parameter)"
+        >
+          <span class="nav-btn-num">10</span>
+        </button>
+      
+    </div>
+  </section>
+
+  <!-- Stage Challenge Scenario Card -->
+  <section class="scenario-section card">
+    <div class="scenario-header">
+      <div class="scenario-title-area">
+        <span class="badge badge-accent" id="scenario-stage-badge">שלב 1</span>
+        <h2 id="scenario-title">הצגת קטלוג הספרים המלא</h2>
+      </div>
+      <div class="concepts-list" id="concepts-list">
+        
+          <span class="concept-pill">HTTP GET</span>
+        
+          <span class="concept-pill">Collection Endpoint</span>
+        
+          <span class="concept-pill">200 OK</span>
+        
+      </div>
+    </div>
+    <p class="scenario-desc" id="scenario-desc">המערכת מעוניינת להציג את רשימת כל הספרים הקיימים בקטלוג הספרייה. הרכב ושלח בקשת GET לנתיב אוסף הספרים המתאים לפי עקרונות REST.</p>
+  </section>
+
+  <!-- Interactive HTTP Request Builder & Response Inspector Grid -->
+  <div class="workbench-grid">
+    <!-- Left Column: Request Builder -->
+    <section class="request-builder card">
+      <div class="panel-header">
+        <h3>הרכבת בקשת ה-HTTP (Client Request)</h3>
+        <span class="panel-subtitle">הגדר את סוג הבקשה, הנתיב, הפרמטרים וה-Body</span>
+      </div>
+
+      <form id="http-request-form">
+        <!-- Method & Path Row -->
+        <div class="form-group-row">
+          <div class="form-control-wrap method-wrap">
+            <label for="http-method">Method</label>
+            <select id="http-method" name="method" class="form-select">
+              <option value="GET" selected>GET</option>
+              <option value="POST">POST</option>
+              <option value="PATCH">PATCH</option>
+              <option value="PUT">PUT</option>
+              <option value="DELETE">DELETE</option>
+            </select>
+          </div>
+
+          <div class="form-control-wrap path-wrap">
+            <label for="http-path">Request Path (נתיב ה-API)</label>
+            <div class="input-with-prefix">
+              <input
+                type="text"
+                id="http-path"
+                name="path"
+                class="form-input code-font"
+                placeholder="/api/books"
+                value="/api/books"
+                dir="ltr"
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Query Parameters Section -->
+        <div class="accordion-item" id="query-params-accordion">
+          <div class="accordion-header">
+            <label>Query Parameters (?key=value)</label>
+            <button type="button" class="btn btn-xs btn-outline" id="add-query-param-btn">➕ הוסף פרמטר</button>
+          </div>
+          <div class="query-params-list" id="query-params-list">
+            <!-- Dynamic Key-Value Rows inserted via JS -->
+          </div>
+        </div>
+
+        <!-- Request Body Section (JSON) -->
+        <div class="form-group" id="body-section">
+          <div class="body-header">
+            <label for="http-body">Request Body (JSON)</label>
+            <div class="body-actions">
+              <button type="button" class="btn btn-xs btn-outline" id="format-json-btn">⚡ עצב JSON</button>
+              <button type="button" class="btn btn-xs btn-outline" id="clear-body-btn">🗑️ נקה</button>
+            </div>
+          </div>
+          <textarea
+            id="http-body"
+            name="body"
+            class="form-textarea code-font"
+            rows="5"
+            dir="ltr"
+            placeholder='{\n  "title": "Clean Code",\n  "author": "Robert C. Martin"\n}'
+          ></textarea>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+          <button type="submit" class="btn btn-success btn-lg" id="send-request-btn">
+            🚀 שלח בקשת HTTP
+          </button>
+          <button type="button" class="btn btn-outline" id="reset-inputs-btn">
+            🔄 אפס טופס
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Right Column: Server Response Inspector -->
+    <section class="response-inspector card">
+      <div class="panel-header">
+        <h3>תשובת השרת (Server Response)</h3>
+        <div class="status-indicator-wrap" id="status-indicator-wrap" style="display: none;">
+          <span class="status-badge" id="status-badge">200 OK</span>
+          <span class="time-badge" id="time-badge">12ms</span>
+        </div>
+      </div>
+
+      <!-- Server Validation Banner -->
+      <div class="validation-banner" id="validation-banner">
+        <div class="validation-message-wrap">
+          <span class="validation-icon" id="validation-icon">💡</span>
+          <div class="validation-text">
+            <strong id="validation-title">ממתין לשליחת בקשה...</strong>
+            <p id="validation-desc">בחר את הפרמטרים המתאימים לשלב ולחץ על "שלח בקשת HTTP".</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary" id="next-stage-btn" style="display: none;">
+          המשך לשלב הבא ⬅️
+        </button>
+      </div>
+
+      <!-- Response Headers & Metadata -->
+      <div class="response-meta-box">
+        <div class="meta-row">
+          <span class="meta-label">נתיב שנשלח:</span>
+          <code id="requested-url-display" class="code-font" dir="ltr">-</code>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">כותרות תגובה:</span>
+          <span id="response-headers-display" class="code-font" dir="ltr">Content-Type: application/json</span>
+        </div>
+      </div>
+
+      <!-- Response Body Display -->
+      <div class="response-body-wrap">
+        <div class="response-body-header">
+          <span>גוף התשובה (Response Payload JSON):</span>
+          <button type="button" class="btn btn-xs btn-outline" id="copy-response-btn">📋 העתק JSON</button>
+        </div>
+        <pre class="response-pre"><code id="response-code-display" class="code-font" dir="ltr">// התוצאה שתתקבל מהשרת תוצג כאן...</code></pre>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- Embedded Stages Configuration for Client-Side Navigation -->
+<script id="stages-data" type="application/json">
+  [{"id":1,"title":"הצגת קטלוג הספרים המלא","titleEn":"Fetch Complete Books Catalog","description":"המערכת מעוניינת להציג את רשימת כל הספרים הקיימים בקטלוג הספרייה. הרכב ושלח בקשת GET לנתיב אוסף הספרים המתאים לפי עקרונות REST.","descriptionEn":"The system needs to retrieve the full catalog of books. Send an HTTP GET request to the books collection endpoint.","concepts":["HTTP GET","Collection Endpoint","200 OK"]},{"id":2,"title":"שליפת פריט בודד לפי מזהה","titleEn":"Fetch Single Item via Route Parameter","description":"לקוח בחר לצפות בפרטי הספר בעל מזהה 2 (\"A Brief History of Time\"). השתמש ב-Route Parameter כדי לשלוף פריט זה.","descriptionEn":"A user clicked on book ID 2. Use a route parameter to fetch this specific resource.","concepts":["Route Parameters","Single Resource","200 OK"]},{"id":3,"title":"סינון תוצאות באמצעות Query Parameter","titleEn":"Filter Resources with Query Parameter","description":"המשתמש מעוניין לצפות אך ורק בספרים מקטגוריית \"Science\". השתמש ב-Query Parameter מתאים לסינון התוצאות בצד השרת.","descriptionEn":"Filter the catalog to retrieve only books where category is Science using a query parameter.","concepts":["Query Parameters","Server-side Filtering","200 OK"]},{"id":4,"title":"שילוב מספר Query Parameters (סינון ומיון)","titleEn":"Multi-Query Parameters: Filtering & Sorting","description":"מנהל החנות מבקש להציג ספרים מקטגוריית \"Fiction\", כשהם ממוינים לפי מחיר (\"price\") בסדר עולה (\"asc\"). שלב שני Query Parameters באותה בקשה.","descriptionEn":"Combine multiple query parameters to filter category=Fiction and sort by price ascending.","concepts":["Multiple Query Parameters","Filtering & Sorting","Combined Concept"]},{"id":5,"title":"טיפול בשגיאות ובחינת קוד סטטוס 404","titleEn":"Error Handling: 404 Not Found Inspection","description":"משתמש מנסה לפתוח ספר בעל מזהה 999 שאינו קיים במערכת. שלח בקשת GET לנתיב זה, ובחן את קוד הסטטוס (404 Not Found) ומבנה תשובת השגיאה ב-JSON.","descriptionEn":"Request non-existent book ID 999 to observe and inspect the 404 Not Found error response.","concepts":["HTTP 404 Not Found","Error Payloads","Client Error Handling"]},{"id":6,"title":"יצירת משאב חדש באמצעות POST ו-Body","titleEn":"Create Resource with POST & Request Body","description":"הוסף ספר חדש לקטלוג הספרייה. שלח בקשת POST לנתיב האוסף /api/books יחד עם Request Body ב-JSON הכולל: title, author, category, price.","descriptionEn":"Create a new book using POST /api/books with a JSON body containing title, author, category, and price.","concepts":["HTTP POST","Request Body (JSON)","201 Created","State Mutation"]},{"id":7,"title":"עדכון משאב קיים (PATCH/PUT + Route Param + Body)","titleEn":"Update Resource with Route Param & Body","description":"מחירו של ספר מספר 1 עודכן ל-29.99 והמלאי אזל (inStock: false). שלח בקשת PATCH לנתיב הספר הספציפי עם Body מתאים לעדכון השדות.","descriptionEn":"Update book #1 price to 29.99 and inStock to false using PATCH with route param and body.","concepts":["HTTP PATCH / PUT","Route Parameter + Body","Combined Concept","200 OK"]},{"id":8,"title":"שליפת משאב מקושר (Nested Relational Route)","titleEn":"Fetch Relational Reviews via Nested Route","description":"קרא את כל הביקורות השייכות לספר מספר 1. עליך להשתמש בנתיב מקונן המבטא את הקשר ההיררכי בין ספר לביקורות שלו.","descriptionEn":"Fetch all reviews for book 1 using a RESTful nested endpoint /api/books/1/reviews.","concepts":["Nested Routes","Resource Relations","200 OK"]},{"id":9,"title":"הוספת ביקורת למשאב מקושר (Nested Route + POST + Body)","titleEn":"Create Nested Review via POST and Body","description":"משתמשת בשם \"Alice\" מעוניינת להוסיף ביקורת חדשה עבור ספר מספר 2 עם דירוג 5. שלח בקשת POST לנתיב הביקורות המקונן של ספר 2 יחד עם Body מתאים.","descriptionEn":"Post a new review for book 2 with reviewer, comment, and rating in body to /api/books/2/reviews.","concepts":["POST Nested Route","Relational Creation","Combined Concept","201 Created"]},{"id":10,"title":"מחיקת משאב (DELETE עם Route Parameter)","titleEn":"Delete Resource with DELETE & Route Param","description":"ספר מספר 3 הוסר מרשימת הספרייה לצמיתות. שלח בקשת DELETE עם מזהה הספר ב-Route Parameter כדי למחוק אותו מהשרת.","descriptionEn":"Delete book #3 using HTTP DELETE /api/books/3 and verify item removal.","concepts":["HTTP DELETE","Route Parameter","State Mutation","200 OK"]}]
+</script>
+
+  </main>
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p>תרגיל 3 - פיתוח יישומי אינטרנט | מוגש על ידי <strong>oris7003</strong> ו-<strong>yoav7000</strong></p>
+      <p class="footer-subtext">אפליקציית Node.js & Express עם SSR (EJS), Vanilla JS Client, ואימות צד שרת מלא.</p>
+    </div>
+  </footer>
+  <script src="./js/gh-pages-api.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
+
